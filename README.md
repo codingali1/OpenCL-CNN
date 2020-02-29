@@ -10,9 +10,9 @@ Due to using the CIFAR-10 dataset, the input size of this model is 32 x 32 and t
 ## Acceleration Method
 
 ### OpenCL
-In the CNN model, acceleration through parallelism is very useful. So OpenCL is used to apply the parallelism with the GPU to this CNN model.
+In the CNN model, acceleration through parallelism is very useful. So OpenCL is used to apply the parallelism with the GPU to this model.
 
-OpenCL is used to parallelize convolutional layers, pooling layers, and FC layers in VGG16. Next, batch processing is applied to maximize the effect of parallel processing.
+OpenCL is used to parallelize convolutional layers, pooling layers, and FC layers. Batch processing is then further applied to maximize the effect of parallel processing.
 
 ### Convolutional Layer
 
