@@ -10,3 +10,6 @@ cnn_opencl
 
 # binary file
 *.bin
+
+# result file
+result.out
