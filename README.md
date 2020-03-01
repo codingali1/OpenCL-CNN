@@ -30,8 +30,11 @@ OpenCL is used to parallelize convolutional layers, pooling layers, and FC layer
 * Model: VGG16
 * Dataset: CIFAR-10
 * OpenCL
-    * Intel GPU: OpenCL 2.1
-    * AMD ROCm: OpenCL 2.0
+    1. Intel GPU: OpenCL 2.1
+    2. AMD ROCm: OpenCL 2.0
+* Specification
+    1. Intel i5-8265U, DDR4 16GB, Intel UHD Graphics
+    2. 
 
 ## Performance
 
