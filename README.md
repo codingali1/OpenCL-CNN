@@ -34,7 +34,7 @@ OpenCL is used to parallelize convolutional layers, pooling layers, and FC layer
     2. AMD ROCm: OpenCL 2.0
 * Specification
     1. Intel i5-8265U, DDR4 16GB, Intel UHD Graphics
-    2. 
+    2. Intel i7-2600, DDR3 16GB, AMD Radeon RX480
 
 ## Performance
 
