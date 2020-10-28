@@ -58,7 +58,7 @@ __kernel void convolution_2(
 
     const int RTS = TS / WPT;
 
-    float sum[DEPTH][WPT] = {0.0f, };
+    float sum[DEPTH][WPT] = {{0.0f}};
 
 	for (int t = 0; t < COL_A; t += TS) {
         for (int w = 0; w < WPT; w++) {
@@ -135,7 +135,7 @@ __kernel void convolution_2_tiling_more_batch_per_thread(
 	int gi = get_group_id(1) * TS + li;
     int gj = get_group_id(0) * TS + lj;
 
-    float sum[DEPTH] = {0.0f, };
+    float sum[DEPTH] = {{0.0f}};
 
 	for (int t = 0; t < COL_A; t += TS) {
         const int tj = t + lj;

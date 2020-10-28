@@ -2,9 +2,10 @@
 #include "cnn.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
-#define BATCH 	1000	// batch size
+#define BATCH 	500		// batch size
 #define TS 		16		// tile size
 #define WPT 	2		// work per thread
 #define DEPTH 	4		// batch per thread
@@ -27,7 +28,7 @@ int input_offset, filter_offset;
 cl_mem m_pooling_input, m_pooling_output;
 cl_mem m_fc_input, m_fc_output;
 
-size_t global_size[3] = { NULL, BATCH , 1};
+size_t global_size[3] = { 0, BATCH , 1};
 size_t local_size[3] = { 256, 1, 1 };
 
 #define CHECK_ERROR(err) \
@@ -210,6 +211,7 @@ float* alloc_layer(size_t n) {
 }
 
 void cnn_init() {
+	char version[1024];
 
 	 // Platform ID
 	err = clGetPlatformIDs(1, &platform, NULL);
@@ -219,12 +221,19 @@ void cnn_init() {
 	err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
 	CHECK_ERROR(err);
 
+	err = clGetDeviceInfo(device, CL_DEVICE_VERSION, 1024, version, NULL);
+	CHECK_ERROR(err);
+
 	// Create Context
 	context = clCreateContext(NULL, 1, &device, NULL, NULL, &err);
 	CHECK_ERROR(err);
 
 	// Create Command Queue
-	queue = clCreateCommandQueueWithProperties(context, device, 0, &err);
+	if ((strncmp(version, "OpenCL 1.0", 10) && strncmp(version, "OpenCL 1.1", 10) && strncmp(version, "OpenCL 1.2", 10)) != 0) {
+		queue = clCreateCommandQueueWithProperties(context, device, 0, &err);
+	} else {
+		queue = clCreateCommandQueue(context, device, 0, &err);
+	}
 	CHECK_ERROR(err);
 
 	// Create Program Object
