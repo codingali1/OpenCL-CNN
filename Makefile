@@ -1,6 +1,6 @@
 CC 	= gcc
-CFLAGS	= -O2
-OBJECT	= OpenCL_CNN.c cnn_opencl.c Compare_result.c
+CFLAGS	= -O3
+OBJECT	= main.c cnn_opencl.c Compare_result.c
 TARGET	= cnn_opencl
 
 LIB_NAMES = -lOpenCL -lm
@@ -15,7 +15,7 @@ clean:
 	rm -f $(TARGET)
 
 intel:
-	$(CC) -o $(TARGET) $(OBJECT) $(LIB_NAMES) $(DIR_LIB_INTEL_OPENCL) $(DIR_HEADER_INTEL_OPENCL)
+	$(CC) -o $(TARGET) $(OBJECT) $(CFLAGS) $(LIB_NAMES) $(DIR_LIB_INTEL_OPENCL) $(DIR_HEADER_INTEL_OPENCL)
 	
 nvidia: 
-	$(CC) -o $(TARGET) $(OBJECT) $(LIB_NAMES) $(DIR_LIB_NVIDIA_OPENCL) $(DIR_HEADER_NVIDIA_OPENCL)
+	$(CC) -o $(TARGET) $(OBJECT) $(CFLAGS) $(LIB_NAMES) $(DIR_LIB_NVIDIA_OPENCL) $(DIR_HEADER_NVIDIA_OPENCL)
