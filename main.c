@@ -5,36 +5,36 @@
 #include "compare.h"
 
 const char* CLASS_NAME[] = {
-	"airplane",
-	"automobile",
-	"bird",
-	"cat",
-	"deer",
-	"dog",
-	"frog",
-	"horse",
-	"ship",
-	"truck"
+    "airplane",
+    "automobile",
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "frog",
+    "horse",
+    "ship",
+    "truck"
 };
 
 void print_usage_and_exit(char** argv) {
-	fprintf(stderr, "Usage: %s <number of image> <output>\n", argv[0]);
-	fprintf(stderr, " e.g., %s 3000 result.out\n", argv[0]);
-	exit(EXIT_FAILURE);
+    fprintf(stderr, "Usage: %s <number of image> <output>\n", argv[0]);
+    fprintf(stderr, " e.g., %s 3000 result.out\n", argv[0]);
+    exit(EXIT_FAILURE);
 }
 
 void* read_bytes(const char* fn, size_t n) {
-	FILE* f = fopen(fn, "rb");
-	void* bytes = malloc(n);
-	size_t r = fread(bytes, 1, n, f);
-	fclose(f);
-	if (r != n) {
-		fprintf(stderr,
-			"%s: %zd bytes are expected, but %zd bytes are read.\n",
-			fn, n, r);
-		exit(EXIT_FAILURE);
-	}
-	return bytes;
+    FILE* f = fopen(fn, "rb");
+    void* bytes = malloc(n);
+    size_t r = fread(bytes, 1, n, f);
+    fclose(f);
+    if (r != n) {
+        fprintf(stderr,
+            "%s: %zd bytes are expected, but %zd bytes are read.\n",
+            fn, n, r);
+        exit(EXIT_FAILURE);
+    }
+    return bytes;
 }
 
 /*
@@ -44,7 +44,7 @@ void* read_bytes(const char* fn, size_t n) {
  */
 const int IMAGE_CHW = 3 * 32 * 32 * sizeof(float);
 float* read_images(size_t n) {
-	return (float*)read_bytes("cifar10_image.bin", n * IMAGE_CHW);
+    return (float*)read_bytes("./data/cifar10_image.bin", n * IMAGE_CHW);
 }
 
 /*
@@ -52,7 +52,7 @@ float* read_images(size_t n) {
  * 10000 * sizeof(int) = 40000 bytes are expected.
  */
 int* read_labels(size_t n) {
-	return (int*)read_bytes("cifar10_label.bin", n * sizeof(int));
+    return (int*)read_bytes("./data/cifar10_label.bin", n * sizeof(int));
 }
 
 /*
@@ -76,77 +76,77 @@ int* read_labels(size_t n) {
  * Thus, 60980520 bytes are expected.
  */
 const int NETWORK_SIZES[] = {
-	64 * 3 * 3 * 3, 64,
-	64 * 64 * 3 * 3, 64,
-	128 * 64 * 3 * 3, 128,
-	128 * 128 * 3 * 3, 128,
-	256 * 128 * 3 * 3, 256,
-	256 * 256 * 3 * 3, 256,
-	256 * 256 * 3 * 3, 256,
-	512 * 256 * 3 * 3, 512,
-	512 * 512 * 3 * 3, 512,
-	512 * 512 * 3 * 3, 512,
-	512 * 512 * 3 * 3, 512,
-	512 * 512 * 3 * 3, 512,
-	512 * 512 * 3 * 3, 512,
-	512 * 512, 512,
-	512 * 512, 512,
-	10 * 512, 10
+    64 * 3 * 3 * 3, 64,
+    64 * 64 * 3 * 3, 64,
+    128 * 64 * 3 * 3, 128,
+    128 * 128 * 3 * 3, 128,
+    256 * 128 * 3 * 3, 256,
+    256 * 256 * 3 * 3, 256,
+    256 * 256 * 3 * 3, 256,
+    512 * 256 * 3 * 3, 512,
+    512 * 512 * 3 * 3, 512,
+    512 * 512 * 3 * 3, 512,
+    512 * 512 * 3 * 3, 512,
+    512 * 512 * 3 * 3, 512,
+    512 * 512 * 3 * 3, 512,
+    512 * 512, 512,
+    512 * 512, 512,
+    10 * 512, 10
 };
 
 float* read_network() {
-	return (float*)read_bytes("network.bin", 60980520);
+    return (float*)read_bytes("./save/network.bin", 60980520);
 }
 
 float** slice_network(float* p) {
-	float** r = (float**)malloc(sizeof(float*) * 32);
-	for (int i = 0; i < 32; ++i) {
-		r[i] = p;
-		p += NETWORK_SIZES[i];
-	}
-	return r;
+    float** r = (float**)malloc(sizeof(float*) * 32);
+    for (int i = 0; i < 32; ++i) {
+        r[i] = p;
+        p += NETWORK_SIZES[i];
+    }
+    return r;
 }
 
 int main(int argc, char** argv) {
-	if (argc != 3) {
-		print_usage_and_exit(argv);
-	}
+    if (argc != 3) {
+        print_usage_and_exit(argv);
+    }
 
-	int num_images = atoi(argv[1]);
-	float* images = read_images(num_images);
-	float* network = read_network();
-	float** network_sliced = slice_network(network);
-	int* labels = (int*)calloc(num_images, sizeof(int));
-	float* confidences = (float*)calloc(num_images, sizeof(float));
+    int num_images = atoi(argv[1]);
+    float* images = read_images(num_images);
+    float* network = read_network();
+    float** network_sliced = slice_network(network);
+    int* labels = (int*)calloc(num_images, sizeof(int));
+    float* confidences = (float*)calloc(num_images, sizeof(float));
 
-	printf("OpenCL_CNN\tImages: %4d\n", num_images);
+    printf("OpenCL_CNN\tImages: %4d\n", num_images);
 
-	clock_t start;
+    clock_t start;
 
-	cnn_init();
-	start = clock();
-	cnn(images, network_sliced, labels, confidences, num_images);
-	printf("\tExecution time: %f sec\n", (double)(clock() - start) / CLOCKS_PER_SEC);
+    cnn_init();
+    start = clock();
+    cnn(images, network_sliced, labels, confidences, num_images);
+    printf("\tExecution time: %f sec\n", (double)(clock() - start) / CLOCKS_PER_SEC);
 
-	FILE* of = fopen(argv[2], "w");
-	int* labels_ans = read_labels(num_images);
-	double acc = 0;
-	for (int i = 0; i < num_images; ++i) {
-		fprintf(of, "Image %04d: %s %f\n", i, CLASS_NAME[labels[i]], confidences[i]);
-		if (labels[i] == labels_ans[i]) ++acc;
-	}
-	fprintf(of, "Accuracy: %f\n", acc / num_images);
-	fclose(of);
+    FILE* of = fopen(argv[2], "w");
+    int* labels_ans = read_labels(num_images);
+    double acc = 0;
+    for (int i = 0; i < num_images; ++i) {
+        fprintf(of, "Image %04d: %s %f\n", i, CLASS_NAME[labels[i]], confidences[i]);
+        if (labels[i] == labels_ans[i]) ++acc;
+    }
+    fprintf(of, "Accuracy: %f\n", acc / num_images);
+    fclose(of);
 
-	compare(argv[2]);
-	printf("\tAccuracy: %f\n", acc / num_images);
-	
-	free(images);
-	free(network);
-	free(network_sliced);
-	free(labels);
-	free(confidences);
-	free(labels_ans);
+    compare(argv[2]);
+    printf("\tAccuracy: %f\n", acc / num_images);
+    
+    free(images);
+    free(network);
+    free(network_sliced);
+    free(labels);
+    free(confidences);
+    free(labels_ans);
 
-	return 0;
+    return 0;
 }

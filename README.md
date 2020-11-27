@@ -5,7 +5,6 @@
 
 Due to using the CIFAR-10 dataset, the input size of this model is 32 x 32 and the output size of it is 10. It outputs 512 parameters through convolution operations.Therefore, It is made by changing the size of FC layer from 4096 to 512.
 
-
 ## Acceleration Method
 
 ### OpenCL
@@ -19,11 +18,12 @@ OpenCL is used to parallelize convolutional layers, pooling layers, and FC layer
 
 **Tiling Algorithm**
 
-
 ## Environment
 * Model: VGG16
 * Dataset: CIFAR-10
-* OpenCL
-* Specification
+* Spec
+    * i5-9600KF, DDR4 64GB, RTX3090
 
 ## Performance
+
+![Performance Graph](./assets/performance.jpg)
