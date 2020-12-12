@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
 
     compare(argv[2]);
     printf("\tAccuracy: %f\n", acc / num_images);
-    
+
     free(images);
     free(network);
     free(network_sliced);

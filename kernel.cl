@@ -1,6 +1,6 @@
 __kernel void convolution_1(__global float *inputs,
-						    __global float *conv_temp,
-						    int D1, int N, int input_offset) {
+                            __global float *conv_temp,
+                            int D1, int N, int input_offset) {
     int g_i = get_global_id(0);
     int b_i = get_global_id(1);
 
@@ -38,10 +38,10 @@ __kernel void convolution_2(
 {
     int b_i = get_global_id(2);
 
-	const int ROW_A = D2;
-	const int COL_A = D1 * 3 * 3;
-	const int ROW_B = D1 * 3 * 3;
-	const int COL_B = N * N;
+    const int ROW_A = D2;
+    const int COL_A = D1 * 3 * 3;
+    const int ROW_B = D1 * 3 * 3;
+    const int COL_B = N * N;
 
     __global float *temp = conv_temp + (ROW_B * COL_B) * b_i * DEPTH;
     __global float *filter = networks + filter_offset;
@@ -49,21 +49,21 @@ __kernel void convolution_2(
     __global float *output = outputs + (ROW_A * COL_B) * b_i * DEPTH;
 
     __local float Asub[TS][TS];
-	__local float Bsub[DEPTH][TS][TS];
+    __local float Bsub[DEPTH][TS][TS];
 
     int li = get_local_id(1);
     int lj = get_local_id(0);
-	int gi = get_group_id(1) * TS + li;
+    int gi = get_group_id(1) * TS + li;
     int gj = get_group_id(0) * TS + lj;
 
     const int RTS = TS / WPT;
 
     float sum[DEPTH][WPT] = {{0.0f}};
 
-	for (int t = 0; t < COL_A; t += TS) {
+    for (int t = 0; t < COL_A; t += TS) {
         for (int w = 0; w < WPT; w++) {
             const int tj = t + lj;
-			const int ti = t + li;
+            const int ti = t + li;
 
             if (gi < ROW_A && (tj + (w * RTS)) < COL_A) {
                 Asub[li][lj + (w * RTS)] = filter[gi * COL_A + tj + (w * RTS)];
@@ -75,7 +75,7 @@ __kernel void convolution_2(
         for (int d = 0; d < DEPTH; d++) {
             for (int w = 0; w < WPT; w++) {
                 const int tj = t + lj;
-			    const int ti = t + li;
+                const int ti = t + li;
 
                 if (ti < ROW_B && (gj + (w * RTS)) < COL_B) {
                     Bsub[d][li][lj + (w * RTS)] = temp[(d * ROW_B * COL_B) + ti * COL_B + gj + (w * RTS)];
@@ -85,7 +85,7 @@ __kernel void convolution_2(
             }
         }
 
-		barrier(CLK_LOCAL_MEM_FENCE);
+        barrier(CLK_LOCAL_MEM_FENCE);
 
         for(int d = 0; d < DEPTH; d++) {
             for (int k = 0; k < TS; k++) {
@@ -95,8 +95,8 @@ __kernel void convolution_2(
             }
         }
 
-		barrier(CLK_LOCAL_MEM_FENCE);
-	}
+        barrier(CLK_LOCAL_MEM_FENCE);
+    }
 
     for(int d = 0; d < DEPTH; d++) {
         for (int w = 0; w < WPT; w++) {
@@ -117,10 +117,10 @@ __kernel void convolution_2_tiling_more_batch_per_thread(
 {
     int b_i = get_global_id(2);
 
-	const int ROW_A = D2;
-	const int COL_A = D1 * 3 * 3;
-	const int ROW_B = D1 * 3 * 3;
-	const int COL_B = N * N;
+    const int ROW_A = D2;
+    const int COL_A = D1 * 3 * 3;
+    const int ROW_B = D1 * 3 * 3;
+    const int COL_B = N * N;
 
     __global float *temp = conv_temp + (ROW_B * COL_B) * b_i * DEPTH;
     __global float *filter = networks + filter_offset;
@@ -128,18 +128,18 @@ __kernel void convolution_2_tiling_more_batch_per_thread(
     __global float *output = outputs + (ROW_A * COL_B) * b_i * DEPTH;
 
     __local float Asub[TS][TS];
-	__local float Bsub[DEPTH][TS][TS];
+    __local float Bsub[DEPTH][TS][TS];
 
     int li = get_local_id(1);
     int lj = get_local_id(0);
-	int gi = get_group_id(1) * TS + li;
+    int gi = get_group_id(1) * TS + li;
     int gj = get_group_id(0) * TS + lj;
 
     float sum[DEPTH] = {{0.0f}};
 
-	for (int t = 0; t < COL_A; t += TS) {
+    for (int t = 0; t < COL_A; t += TS) {
         const int tj = t + lj;
-		const int ti = t + li;
+        const int ti = t + li;
 
         if (gi < ROW_A && tj < COL_A) {
             Asub[li][lj] = filter[gi * COL_A + tj];
@@ -155,7 +155,7 @@ __kernel void convolution_2_tiling_more_batch_per_thread(
             }
         }
 
-		barrier(CLK_LOCAL_MEM_FENCE);
+        barrier(CLK_LOCAL_MEM_FENCE);
 
         for(int d = 0; d < DEPTH; d++) {
             for (int k = 0; k < TS; k++) {
@@ -163,8 +163,8 @@ __kernel void convolution_2_tiling_more_batch_per_thread(
             }
         }
 
-		barrier(CLK_LOCAL_MEM_FENCE);
-	}
+        barrier(CLK_LOCAL_MEM_FENCE);
+    }
 
     for(int d = 0; d < DEPTH; d++) {
         if (gi < ROW_A && gj < COL_B) {
@@ -174,8 +174,8 @@ __kernel void convolution_2_tiling_more_batch_per_thread(
 }
 
 __kernel void pooling(__global float *inputs,
-					  __global float *outputs,
-					  int D, int N) {
+                      __global float *outputs,
+                      int D, int N) {
     int g_i = get_global_id(0);
     int b_i = get_global_id(1);
 
@@ -187,7 +187,7 @@ __kernel void pooling(__global float *inputs,
     int i = g_i / (N * N);
     int m = (g_i / N) % N;
     int n = g_i % N;
-    
+
     float max = 0.0f;
 
     for(int k = 0; k < 2; k++)

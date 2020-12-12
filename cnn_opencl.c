@@ -5,10 +5,10 @@
 #include <string.h>
 #include <math.h>
 
-#define BATCH 	500	// batch size
-#define TS 		32		// tile size
-#define WPT 	4		// work per thread
-#define DEPTH 	4		// batch per thread
+#define BATCH   500     // batch size
+#define TS      16      // tile size
+#define WPT     4       // work per thread
+#define DEPTH   4       // batch per thread
 
 cl_platform_id platform;
 cl_device_id device;
@@ -48,7 +48,7 @@ char* get_source_code(const char* file_name, size_t* len) {
     fseek(file, 0, SEEK_END);
     size_t length = (size_t)ftell(file);
     rewind(file);
-    
+
     char* source_code = (char*)malloc(length + 1);
     fread(source_code, length, 1, file);
     source_code[length] = '\0';
@@ -125,12 +125,12 @@ static void convolution_layer(cl_mem* inputs, cl_mem* outputs, cl_mem* networks,
     CHECK_ERROR(err);
 
     // tiling: more work and more batch per thread
-    global_size[0] = N * N / WPT;	global_size[1] = D2;	global_size[2] = BATCH / DEPTH;
-    local_size[0] = TS / WPT;		local_size[1] = TS;		local_size[2] = 1;
+    global_size[0] = N * N / WPT;    global_size[1] = D2;    global_size[2] = BATCH / DEPTH;
+    local_size[0] = TS / WPT;        local_size[1] = TS;        local_size[2] = 1;
 
     // tiling: more batch per thread
-    // global_size[0] = N * N;	global_size[1] = D2;	global_size[2] = BATCH / DEPTH;
-    // local_size[0] = TS;		local_size[1] = TS;		local_size[2] = 1;
+    // global_size[0] = N * N;    global_size[1] = D2;    global_size[2] = BATCH / DEPTH;
+    // local_size[0] = TS;        local_size[1] = TS;        local_size[2] = 1;
 
     global_size[0] = (global_size[0] + local_size[0] - 1) / local_size[0] * local_size[0];
     global_size[1] = (global_size[1] + local_size[1] - 1) / local_size[1] * local_size[1];
@@ -139,7 +139,7 @@ static void convolution_layer(cl_mem* inputs, cl_mem* outputs, cl_mem* networks,
     CHECK_ERROR(err);
 
     global_size[1] = BATCH; global_size[2] = 1;
-    local_size[0] = 256;	local_size[1] = 1;
+    local_size[0] = 256;    local_size[1] = 1;
 }
 
 /*

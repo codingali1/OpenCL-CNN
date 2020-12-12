@@ -1,6 +1,9 @@
-# VGG16 Acceleration using OpenCL
+# CNN Acceleration using OpenCL
 
-## VGG16
+*세종대학교 컴퓨터공학과 **멀티코어프로그래밍** 강의 수강생들, 코드 복사해서 제출하지 마세요. 0점 처리 됩니다.*
+
+## Model - VGG16
+
 [*Karen Simonyan and Andrew Zisserman, "Very deep convolutional networks for large-scale image recognition," International Conference on Learning Representations (ICLR), 2015*](https://arxiv.org/abs/1409.1556)
 
 Due to using the CIFAR-10 dataset, the input size of this model is 32 x 32 and the output size of it is 10. It outputs 512 parameters through convolution operations.Therefore, It is made by changing the size of FC layer from 4096 to 512.
@@ -8,6 +11,7 @@ Due to using the CIFAR-10 dataset, the input size of this model is 32 x 32 and t
 ## Acceleration Method
 
 ### OpenCL
+
 In the CNN model, acceleration through parallelism is very useful. So OpenCL is used to apply the parallelism with the GPU to this model.
 
 OpenCL is used to parallelize convolutional layers, pooling layers, and FC layers. Batch processing is then further applied to maximize the effect of parallel processing.
@@ -18,12 +22,9 @@ OpenCL is used to parallelize convolutional layers, pooling layers, and FC layer
 
 **Tiling Algorithm**
 
-## Environment
-* Model: VGG16
-* Dataset: CIFAR-10
-* Spec
-    * i5-9600KF, DDR4 64GB, RTX3090
-
 ## Performance
+
+* Spec: i5-9600KF, DDR4 64GB, RTX3090
+* Dataset: CIFAR-10
 
 ![Performance Graph](./assets/performance.jpg)

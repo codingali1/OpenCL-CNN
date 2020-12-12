@@ -1,5 +1,5 @@
-CC 	     = gcc
-CFLAGS	 = -O3
+CC     = gcc
+CFLAGS = -O3
 OBJECT = main.c compare.c
 
 LIB_NAMES                = -lOpenCL -lm
